@@ -68,11 +68,6 @@ class CircularTimerCard extends LitElement {
 			throw new Error("You need to provide entity!");
 		}
 
-		var domain = config.entity.split(".")[0];
-		if (domain !== "timer") {
-			throw new Error("Provided entity is not a timer!");
-		}
-
 		// Define the action config
 		this._actionConfig = {
 			entity: config.entity,
@@ -206,32 +201,9 @@ class CircularTimerCard extends LitElement {
 			icon = this._icon;
 		}
 
-		var a = this._stateObj.attributes.duration.split(":");
+		var a = this._stateObj.state.split(':');
 		var d_sec = +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
-		var rem_sec;
-		if (this._stateObj.state == "active") {
-			if (this._direction == "countup") {
-				rem_sec =
-					d_sec -
-					(Date.parse(this._stateObj.attributes.finishes_at) - new Date()) /
-						1000;
-			} else {
-				rem_sec =
-					(Date.parse(this._stateObj.attributes.finishes_at) - new Date()) /
-					1000;
-			}
-		} else {
-			if (this._stateObj.state == "paused") {
-				var a1 = this._stateObj.attributes.remaining.split(":");
-				if (this._direction == "countup") {
-					rem_sec = d_sec - (+a1[0] * 60 * 60 + +a1[1] * 60 + +a1[2]);
-				} else {
-					rem_sec = +a1[0] * 60 * 60 + +a1[1] * 60 + +a1[2];
-				}
-			} else {
-				rem_sec = d_sec;
-			}
-		}
+		var rem_sec = d_sec;
 		var proc = rem_sec / d_sec;
 
 		var limitBin = Math.floor(this._bins * proc);
